@@ -1,38 +1,46 @@
 package services;
 
 import dataaccess.NoteDB;
+import dataaccess.UserDB;
 import java.util.List;
-import models.Note;
+import models.Notes;
+import models.Users;
 
 public class NoteService {
-    public Note get(int id) throws Exception {
+    public Notes get(int id) throws Exception {
         NoteDB noteDB = new NoteDB();
-        Note note = noteDB.get(id);
+        Notes note = noteDB.get(id);
         return note;
     }
     
-    public List<Note> getAll(String email) throws Exception {
+    public List<Notes> getAll(String email) throws Exception {
         NoteDB noteDB = new NoteDB();
-        List<Note> notes = noteDB.getAll(email);
+        List<Notes> notes = noteDB.getAll(email);
         return notes;
     }
     
     public void insert(String title, String contents, String owner) throws Exception {
-        Note note = new Note(0, title, contents, owner);
+        Notes note = new Notes(0, title, contents);
+        
+        UserDB userDB = new UserDB();
+        Users user = userDB.get(owner);
+        note.setOwner(user);
+        
         NoteDB noteDB = new NoteDB();
         noteDB.insert(note);
     }
     
-    public void update(int noteId, String title, String contents, String owner) throws Exception {
-        Note note = new Note(noteId, title, contents, owner);
+    public void update(int noteId, String title, String contents) throws Exception {
         NoteDB noteDB = new NoteDB();
+        Notes note = noteDB.get(noteId);
+        note.setTitle(title);
+        note.setContents(contents);
         noteDB.update(note);
     }
     
     public void delete(int noteId) throws Exception {
-        Note note = new Note();
-        note.setNoteId(noteId);
         NoteDB noteDB = new NoteDB();
+        Notes note = noteDB.get(noteId);
         noteDB.delete(note);
     }
 }

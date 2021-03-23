@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import models.Note;
+import models.Notes;
 import services.NoteService;
 
 public class NoteServlet extends HttpServlet {
@@ -23,7 +23,7 @@ public class NoteServlet extends HttpServlet {
         try {
             HttpSession session = request.getSession();
             String email = (String) session.getAttribute("email");
-            List<Note> notes = ns.getAll(email);
+            List<Notes> notes = ns.getAll(email);
             request.setAttribute("notes", notes);
         } catch (Exception ex) {
             Logger.getLogger(NoteServlet.class.getName()).log(Level.SEVERE, null, ex);
@@ -34,7 +34,7 @@ public class NoteServlet extends HttpServlet {
         if (action != null && action.equals("view")) {
             try {
                 int id = Integer.parseInt(request.getParameter("noteId"));
-                Note note = ns.get(id);
+                Notes note = ns.get(id);
                 request.setAttribute("selectedNote", note);
             } catch (Exception ex) {
                 Logger.getLogger(NoteServlet.class.getName()).log(Level.SEVERE, null, ex);
@@ -65,7 +65,7 @@ public class NoteServlet extends HttpServlet {
                     ns.insert(title, contents, email);
                     break;
                 case "update":
-                    ns.update(Integer.parseInt(noteId), title, contents, email);
+                    ns.update(Integer.parseInt(noteId), title, contents);
                     break;
                 case "delete":
                     ns.delete(Integer.parseInt(noteId));
@@ -77,7 +77,7 @@ public class NoteServlet extends HttpServlet {
         }
 
         try {
-            List<Note> notes = ns.getAll(email);
+            List<Notes> notes = ns.getAll(email);
             request.setAttribute("notes", notes);
         } catch (Exception ex) {
             Logger.getLogger(NoteServlet.class.getName()).log(Level.SEVERE, null, ex);
